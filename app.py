@@ -21,8 +21,9 @@ def post_update():
 
 @app.route("/toggle_hook")
 def toggle_hook():
+    value = request.args.get('value').lower() != 'false'
     telegram_url = generate_telegram_method_url('setWebhook')
-    payload = { 'url': url_for('post_update') }
+    payload = { 'url': url_for('post_update') if value else '' }
     req = requests.post(telegram_url, data=payload)
     return req.text
 
