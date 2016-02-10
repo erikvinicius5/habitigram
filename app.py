@@ -1,4 +1,4 @@
-from flask import Flask, url_for, request
+from flask import Flask, url_for, request, Response
 import os
 import requests
 
@@ -10,7 +10,7 @@ def generate_telegram_method_url(method):
         .format(token=os.environ.get('TOKEN', ''), method=method)
 
 def get_full_url(url):
-    return 'https://{server_name}/{url}'\
+    return 'https://{server_name}{url}'\
         .format(server_name=os.environ.get('HEROKU_URL', ''), url=url_for(url))
 
 @app.route("/")
@@ -19,7 +19,8 @@ def hello():
 
 @app.route("/%s" % os.environ.get('ENCRYPTED_TOKEN', ''), methods=["POST"])
 def post_update():
-    print request.form
+    print request.form['Message']
+    return Response(json.dumps({ 'ok': True }), status=200)
 
 @app.route("/toggle_hook")
 def toggle_hook():
